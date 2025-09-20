@@ -26,14 +26,20 @@ void WifiConnection() {
     server.send(200, "text/html", getPage());
   });
 
+  // next routes
+
   server.begin();
   Serial.println("Server started.");
 }
 
 void CheckWiFiConnection() {
   if (WiFi.status() != WL_CONNECTED) {
+    digitalWrite(LED_BUILTIN, LOW);
     Serial.println("WiFi connection lost. Reconnecting...");
     WifiConnection();
+  }
+  else {
+    digitalWrite(LED_BUILTIN, HIGH);
   }
 }
 
