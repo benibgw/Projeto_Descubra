@@ -22,7 +22,9 @@ void WifiConnection() {
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 
-  // server routes
+  server.on("/", []() {
+    server.send(200, "text/html", getPage());
+  });
 
   server.begin();
   Serial.println("Server started.");
