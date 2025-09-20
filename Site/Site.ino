@@ -10,7 +10,7 @@ WebServer server(80);
 void WifiConnection() {
   Serial.print("Connecting to ");
   Serial.print(ssid);
-  WiFi.begin(ssid);
+  WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     digitalWrite(LED_BUILTIN, HIGH);
