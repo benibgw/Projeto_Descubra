@@ -1,3 +1,96 @@
+#include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
+
+const char* ssid = "Your_SSID";
+const char* password = "Your_PASSWORD";
+
+#define LED_BUILTIN 2
+#define LED_COZINHA 15
+#define LED_SALA 4
+#define LED_QUARTO 16
+#define LED_BANHEIRO 17
+#define LED_ESCADA 22
+#define BUZZER_COZINHA 5
+#define BUZZER_QUARTO 19
+#define BUZZER_BANHEIRO 21
+
+WebServer server(80);
+
+void WifiConnection() {
+  Serial.print("Connecting to ");
+  Serial.print(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(200);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(200);
+  }
+  Serial.println("\nConnected");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  server.on("/", []() {
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/quarto/luz", []() {
+    digitalWrite(LED_QUARTO, !digitalRead(LED_QUARTO));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/quarto/buzzer", []() {
+    digitalWrite(BUZZER_QUARTO, HIGH);
+    delay(1000);
+    digitalWrite(BUZZER_QUARTO, LOW);
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/escada2/luz", []() {
+    digitalWrite(LED_ESCADA, !digitalRead(LED_ESCADA));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/banheiro/luz", []() {
+    digitalWrite(LED_BANHEIRO, !digitalRead(LED_BANHEIRO));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/banheiro/buzzer", []() {
+    digitalWrite(BUZZER_BANHEIRO, HIGH);
+    delay(1000);
+    digitalWrite(BUZZER_BANHEIRO, LOW);
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/sala/luz", []() {
+    digitalWrite(LED_SALA, !digitalRead(LED_SALA));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/cozinha/luz", []() {
+    digitalWrite(LED_COZINHA, !digitalRead(LED_COZINHA));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/cozinha/buzzer", []() {
+    digitalWrite(BUZZER_COZINHA, HIGH);
+    delay(1000);
+    digitalWrite(BUZZER_COZINHA, LOW);
+    server.send(200, "text/html", getPage());
+  });
+
+  server.begin();
+  Serial.println("Server started.");
+}
+
+void CheckWiFiConnection() {
+  if (WiFi.status() != WL_CONNECTED) {
+    digitalWrite(LED_BUILTIN, LOW);
+    Serial.println("WiFi connection lost. Reconnecting...");
+    WifiConnection();
+  }
+  else {
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+}
+
+String getPage(){
+    return R"rawliteral(
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -143,3 +236,25 @@
   </footer>
 </body>
 </html>
+)rawliteral";
+}
+
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LED_COZINHA, OUTPUT);
+  pinMode(LED_SALA, OUTPUT);
+  pinMode(LED_QUARTO, OUTPUT);
+  pinMode(LED_BANHEIRO, OUTPUT);
+  pinMode(LED_ESCADA, OUTPUT);
+  pinMode(BUZZER_COZINHA, OUTPUT);
+  pinMode(BUZZER_QUARTO, OUTPUT);
+  pinMode(BUZZER_BANHEIRO, OUTPUT);
+  WifiConnection();
+}
+
+void loop() {
+  CheckWiFiConnection();
+  server.handleClient();
+}
