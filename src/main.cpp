@@ -2,8 +2,8 @@
 #include <WiFi.h>
 #include <WebServer.h>
 
-const char* ssid = "Your_SSID";
-const char* password = "Your_PASSWORD";
+const char* ssid = "nersec";
+const char* password = "gremio123";
 
 #define LED_BUILTIN 2
 #define LED_COZINHA 15
@@ -16,78 +16,6 @@ const char* password = "Your_PASSWORD";
 #define BUZZER_BANHEIRO 21
 
 WebServer server(80);
-
-void WifiConnection() {
-  Serial.print("Connecting to ");
-  Serial.print(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(200);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(200);
-  }
-  Serial.println("\nConnected");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
-
-  server.on("/", []() {
-    server.send(200, "text/html", getPage());
-  });
-  server.on("/quarto/luz", []() {
-    digitalWrite(LED_QUARTO, !digitalRead(LED_QUARTO));
-    server.send(200, "text/html", getPage());
-  });
-  server.on("/quarto/buzzer", []() {
-    tone(BUZZER_QUARTO, 200, 1000);
-    delay(1000);
-    noTone(BUZZER_QUARTO);
-    server.send(200, "text/html", getPage());
-  });
-  server.on("/escada2/luz", []() {
-    digitalWrite(LED_ESCADA, !digitalRead(LED_ESCADA));
-    server.send(200, "text/html", getPage());
-  });
-  server.on("/banheiro/luz", []() {
-    digitalWrite(LED_BANHEIRO, !digitalRead(LED_BANHEIRO));
-    server.send(200, "text/html", getPage());
-  });
-  server.on("/banheiro/buzzer", []() {
-    tone(BUZZER_BANHEIRO, 200, 1000);
-    delay(1000);
-    noTone(BUZZER_BANHEIRO);
-    server.send(200, "text/html", getPage());
-  });
-  server.on("/sala/luz", []() {
-    digitalWrite(LED_SALA, !digitalRead(LED_SALA));
-    server.send(200, "text/html", getPage());
-  });
-  server.on("/cozinha/luz", []() {
-    digitalWrite(LED_COZINHA, !digitalRead(LED_COZINHA));
-    server.send(200, "text/html", getPage());
-  });
-  server.on("/cozinha/buzzer", []() {
-    tone(BUZZER_COZINHA, 200, 1000);
-    delay(1000);
-    noTone(BUZZER_COZINHA);
-    server.send(200, "text/html", getPage());
-  });
-
-  server.begin();
-  Serial.println("Server started.");
-}
-
-void CheckWiFiConnection() {
-  if (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(LED_BUILTIN, LOW);
-    Serial.println("WiFi connection lost. Reconnecting...");
-    WifiConnection();
-  }
-  else {
-    digitalWrite(LED_BUILTIN, HIGH);
-  }
-}
 
 String getPage(){
     return R"rawliteral(
@@ -237,8 +165,79 @@ String getPage(){
 </body>
 </html>
 )rawliteral";
+};
+
+void WifiConnection() {
+  Serial.print("Connecting to ");
+  Serial.print(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(200);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(200);
+  }
+  Serial.println("\nConnected");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  server.on("/", []() {
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/quarto/luz", []() {
+    digitalWrite(LED_QUARTO, !digitalRead(LED_QUARTO));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/quarto/buzzer", []() {
+    tone(BUZZER_QUARTO, 200, 1000);
+    delay(1000);
+    noTone(BUZZER_QUARTO);
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/escada2/luz", []() {
+    digitalWrite(LED_ESCADA, !digitalRead(LED_ESCADA));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/banheiro/luz", []() {
+    digitalWrite(LED_BANHEIRO, !digitalRead(LED_BANHEIRO));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/banheiro/buzzer", []() {
+    tone(BUZZER_BANHEIRO, 200, 1000);
+    delay(1000);
+    noTone(BUZZER_BANHEIRO);
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/sala/luz", []() {
+    digitalWrite(LED_SALA, !digitalRead(LED_SALA));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/cozinha/luz", []() {
+    digitalWrite(LED_COZINHA, !digitalRead(LED_COZINHA));
+    server.send(200, "text/html", getPage());
+  });
+  server.on("/cozinha/buzzer", []() {
+    tone(BUZZER_COZINHA, 200, 1000);
+    delay(1000);
+    noTone(BUZZER_COZINHA);
+    server.send(200, "text/html", getPage());
+  });
+
+  server.begin();
+  Serial.println("Server started.");
 }
 
+void CheckWiFiConnection() {
+  if (WiFi.status() != WL_CONNECTED) {
+    digitalWrite(LED_BUILTIN, LOW);
+    Serial.println("WiFi connection lost. Reconnecting...");
+    WifiConnection();
+  }
+  else {
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+}
 
 void setup() {
   Serial.begin(9600);
