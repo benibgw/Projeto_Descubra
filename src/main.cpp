@@ -40,9 +40,9 @@ void WifiConnection() {
     server.send(200, "text/html", getPage());
   });
   server.on("/quarto/buzzer", []() {
-    digitalWrite(BUZZER_QUARTO, HIGH);
+    tone(BUZZER_QUARTO, 200, 1000);
     delay(1000);
-    digitalWrite(BUZZER_QUARTO, LOW);
+    noTone(BUZZER_QUARTO);
     server.send(200, "text/html", getPage());
   });
   server.on("/escada2/luz", []() {
@@ -54,9 +54,9 @@ void WifiConnection() {
     server.send(200, "text/html", getPage());
   });
   server.on("/banheiro/buzzer", []() {
-    digitalWrite(BUZZER_BANHEIRO, HIGH);
+    tone(BUZZER_BANHEIRO, 200, 1000);
     delay(1000);
-    digitalWrite(BUZZER_BANHEIRO, LOW);
+    noTone(BUZZER_BANHEIRO);
     server.send(200, "text/html", getPage());
   });
   server.on("/sala/luz", []() {
@@ -68,9 +68,9 @@ void WifiConnection() {
     server.send(200, "text/html", getPage());
   });
   server.on("/cozinha/buzzer", []() {
-    digitalWrite(BUZZER_COZINHA, HIGH);
+    tone(BUZZER_COZINHA, 200, 1000);
     delay(1000);
-    digitalWrite(BUZZER_COZINHA, LOW);
+    noTone(BUZZER_COZINHA);
     server.send(200, "text/html", getPage());
   });
 
