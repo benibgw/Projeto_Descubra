@@ -165,7 +165,7 @@ String getPage(){
 </body>
 </html>
 )rawliteral";
-};
+}
 
 void WifiConnection() {
   Serial.print("Connecting to ");
