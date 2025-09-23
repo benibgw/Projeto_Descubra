@@ -2,14 +2,14 @@
 #include <WiFi.h>
 #include <WebServer.h>
 
-const char* ssid = "nersec";
-const char* password = "gremio123";
+const char* ssid = "Your_SSID";
+const char* password = "Your_PASSWORD";
 
 #define LED_BUILTIN 2
 #define LED_COZINHA 15
 #define LED_SALA 4
-#define LED_QUARTO 16
-#define LED_BANHEIRO 17
+#define LED_QUARTO 18
+#define LED_BANHEIRO 23
 #define LED_ESCADA 22
 #define BUZZER_COZINHA 5
 #define BUZZER_QUARTO 19
@@ -165,7 +165,7 @@ String getPage(){
 </body>
 </html>
 )rawliteral";
-}
+};
 
 void WifiConnection() {
   Serial.print("Connecting to ");
