@@ -1,19 +1,22 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
 
 const char* ssid = "Your_SSID";
 const char* password = "Your_PASSWORD";
+LiquidCrystal_I2C lcd(0x26, 16, 2);
 
 #define LED_BUILTIN 2
 #define LED_COZINHA 15
 #define LED_SALA 4
 #define LED_QUARTO 18
 #define LED_BANHEIRO 23
-#define LED_ESCADA 22
+#define LED_ESCADA 14
 #define BUZZER_COZINHA 5
 #define BUZZER_QUARTO 19
-#define BUZZER_BANHEIRO 21
+#define BUZZER_BANHEIRO 12
 
 WebServer server(80);
 
@@ -276,6 +279,8 @@ void CheckWiFiConnection() {
 
 void setup() {
   Serial.begin(9600);
+  Wire.begin();
+  lcd.init();
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(LED_COZINHA, OUTPUT);
   pinMode(LED_SALA, OUTPUT);
@@ -286,6 +291,9 @@ void setup() {
   pinMode(BUZZER_QUARTO, OUTPUT);
   pinMode(BUZZER_BANHEIRO, OUTPUT);
   WifiConnection();
+  lcd.clear();
+  lcd.backlight();
+  lcd.print("IoT 414");
 }
 
 void loop() {
