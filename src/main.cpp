@@ -3,9 +3,10 @@
 #include <WebServer.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
+#include <ESPmDNS.h>
 
-const char* ssid = "Your_SSID";
-const char* password = "Your_PASSWORD";
+const char* ssid = "Casa_Inteligente";
+const char* password = "abacaxi123";
 LiquidCrystal_I2C lcd(0x26, 16, 2);
 
 #define LED_BUILTIN 2
@@ -191,15 +192,14 @@ String getPage(){
 };
 
 void WifiConnection() {
-  Serial.print("Connecting to ");
-  Serial.print(ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(200);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(200);
+  Serial.print("Iniciando Access Point: ");
+  Serial.println(ssid);
+  WiFi.softAP(ssid, password);
+
+  if (MDNS.begin("localhost")) {
+    Serial.println("mDNS responder iniciado: http://localhost.local/");
+  } else {
+    Serial.println("Erro ao iniciar mDNS");
   }
 
   server.on("/", []() {
@@ -302,16 +302,11 @@ void WifiConnection() {
   Serial.println("Server started.");
 }
 
-void CheckWiFiConnection() {
-  if (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(LED_BUILTIN, LOW);
-    Serial.println("WiFi connection lost. Reconnecting...");
-    WifiConnection();
-  }
-  else {
+void CheckApState() {
+  if (WiFi.softAPgetStationNum() >= 0) {
     digitalWrite(LED_BUILTIN, HIGH);
-    Serial.print("WiFi connected. IP address: ");
-    Serial.println(WiFi.localIP());
+  } else {
+    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
@@ -333,7 +328,7 @@ void setup() {
 }
 
 void loop() {
-  CheckWiFiConnection();
+  CheckApState();
   server.handleClient();
   delay(1);
 }
