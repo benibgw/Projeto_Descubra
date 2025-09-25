@@ -116,6 +116,21 @@ String getPage(){
         grid-template-columns: 1fr;
       }
     }
+    
+    .lcd-form {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .lcd-form input[type='text'] {
+      padding: 5px;
+      border-radius: 5px;
+      border: none;
+      width: 80%;
+      max-width: 180px;
+    }
+    .lcd-form input[type='submit'] {
+      margin-left: 5px;
+    }
   </style>
 </head>
 <body>
@@ -147,6 +162,11 @@ String getPage(){
       <div class="comodo">
         <h2>Sala</h2>
         <a href="/sala/luz" class="btn btn-luz">Luz</a>
+        <form class="lcd-form" action="/lcd" method="POST">
+          <label for="lcdtext">Texto no LCD:</label><br>
+          <input type="text" id="lcdtext" name="lcdtext" maxlength="32" placeholder="Digite aqui...">
+          <input type="submit" value="Enviar" class="btn btn-luz">
+        </form>
       </div>
 
       <div class="comodo">
@@ -260,6 +280,24 @@ void WifiConnection() {
     server.send(200, "text/html", getPage());
   });
 
+  server.on("/lcd", HTTP_POST, []() {
+    if (server.hasArg("lcdtext")) {
+      String text = server.arg("lcdtext");
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(text.substring(0, 16));
+      if (text.length() > 16) {
+        lcd.setCursor(0, 1);
+        lcd.print(text.substring(16, 32));
+      }
+      Serial.print("LCD: ");
+      Serial.println(text);
+      server.send(200, "text/html", getPage());
+    } else {
+      server.send(400, "text/plain", "Texto não recebido");
+    }
+  });
+
   server.begin();
   Serial.println("Server started.");
 }
@@ -291,9 +329,6 @@ void setup() {
   pinMode(BUZZER_QUARTO, OUTPUT);
   pinMode(BUZZER_BANHEIRO, OUTPUT);
   WifiConnection();
-  lcd.clear();
-  lcd.backlight();
-  lcd.print("IoT 414");
 }
 
 void loop() {
