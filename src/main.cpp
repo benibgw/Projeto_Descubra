@@ -319,6 +319,7 @@ void setup() {
   Serial.begin(9600);
   Wire.begin();
   lcd.init();
+  lcd.backlight();
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(LED_COZINHA, OUTPUT);
   pinMode(LED_SALA, OUTPUT);
